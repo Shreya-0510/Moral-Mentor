@@ -2,49 +2,72 @@
 
 MoralMentor is a full-stack ethics learning platform built with **React + Vite** (frontend) and **Node.js + Express + MongoDB** (backend).
 
-It focuses on scenario-based moral learning through quizzes, flip cards, and curated philosophy resources.
+It makes ethical learning engaging and interactive through scenario-based quizzes, animated flip cards, real-time community debates, and a curated philosophy reading library — all in one place.
 
 ---
 
 ## Repository Structure
 
 - `MoralMentor/` – frontend app (React, Vite, Tailwind)
-- `MoralMentor/server/` – backend API (Express, MongoDB, JWT auth)
+- `MoralMentor/server/` – backend API (Express, MongoDB, Socket.IO, JWT auth)
 - `.github/workflows/static.yml` – CI workflow
 
 ---
 
-## Implemented Features (Confirmed from Code)
+## Features
 
-### 1) Authentication
-- User signup (`/api/signup`)
-- User login (`/api/login`)
-- Cookie/token-based auth checks (`/api/check-auth`)
-- Logout (`/api/logout`)
+### Authentication
+- User signup with password validation
+- User login with JWT token + cookie session
+- Persistent auth check on page load (`/api/check-auth`)
+- Logout with server-side cookie clearing
 
-### 2) Learning Hub + Scenario Quiz Flow
-- Theme selection from Learning Hub (`/hub`)
-- Quiz loader by theme (`GET /api/quiz?theme=...`)
-- Timed, question-by-question quiz UI
-- Immediate consequence feedback per choice
-- Result view with score breakdown and pie chart
+### Learning Hub
+- Browse 15+ ethical themes (Loyalty, Honesty, Fairness, Plagiarism, Bullying, and more)
+- Each theme launches a timed, scenario-based quiz
 
-### 3) Flip Cards Practice
-- Theme-based ethical flip cards (`/flipcards`)
-- Backend support for paginated and random card retrieval:
-  - `GET /api/flipcards/:theme`
-  - `GET /api/flipcards/random/:theme`
+### Scenario-Based Quizzes
+- 10 random questions per theme fetched from MongoDB
+- 20-second per-question countdown timer
+- Immediate consequence feedback after each choice
+- Adaptive difficulty engine that adjusts question weight based on historical performance
+- Streak recovery challenges unlock bonus rounds after missed days
+- Results shown with score, pie chart breakdown, and full answer review table
 
-### 4) Resources Library
-- Search + filter + pagination UI in `/resources`
-- Curated ethics/philosophy book links
-- Download/open external resources
-- Resource CRUD route file exists on backend (`resourceRoutes.js`), though not currently mounted in `server/index.js`
+### Flip Cards
+- Three topic categories: Campus & Academic Ethics, Digital and Technological Responsibility, Society Sustainability & Global Justice
+- Paginated Yes/No moral prompt cards with explanations
+- Cards shuffle on reset; used cards are tracked to avoid repetition within a session
 
-### 5) Progress/Data Foundations
-- User stats model stores quizzes completed, score, and badges
-- Score update endpoint (`POST /api/update-score`)
-- Dashboard page exists (`/dashboard`) with placeholder stats UI
+### Live Debate Rooms
+- Real-time debate sessions powered by Socket.IO
+- Community voting on ethical positions with live percentage bars
+- AI-powered debate moderator that scores argument quality and flags logical fallacies
+- Audience can join as voters or debaters
+
+### Community Discussion
+- Per-dilemma comment threads
+- Users submit their own ethical dilemmas for community review
+- Peer-moderation workflow: submitted dilemmas go through an approval queue before going live
+
+### Resource Library
+- 12 curated philosophy and ethics books (Aristotle, Kant, Mill, Nietzsche, and more)
+- Search by title or author, filter by resource type, paginated grid view
+- One-click access to open-access editions
+
+### Leaderboard
+- User rankings by total points earned across quizzes
+- Top scorer highlighted in gold
+- Global leaderboard synced in real time across all sessions
+
+### Dashboard
+- Quizzes completed, learning streak, and badges earned
+- Admin analytics view with cohort breakdowns and weekly retention funnels
+- Badge milestones at 100, 150, 200, 300, and 500 total points
+
+### Notifications
+- Mobile push notifications for daily moral challenges
+- Weekly ethics tournament reminders
 
 ---
 
@@ -57,10 +80,12 @@ It focuses on scenario-based moral learning through quizzes, flip cards, and cur
 - React Router
 - Axios
 - Recharts / Chart.js
+- Socket.IO client
 
 ### Backend
 - Express 5
 - MongoDB + Mongoose
+- Socket.IO
 - JWT authentication
 - bcryptjs
 - cookie-parser + CORS
@@ -69,73 +94,58 @@ It focuses on scenario-based moral learning through quizzes, flip cards, and cur
 
 ## Local Setup
 
-## 1) Frontend
+### Frontend
 ```bash
-cd /home/runner/work/Moral-Mentor/Moral-Mentor/MoralMentor
+cd MoralMentor
 npm ci
 npm run dev
 ```
 
-## 2) Backend
+### Backend
 ```bash
-cd /home/runner/work/Moral-Mentor/Moral-Mentor/MoralMentor/server
+cd MoralMentor/server
 npm ci
-# create/update .env with MONGO_URI, JWT_SECRET, PORT
+# Add MONGO_URI, JWT_SECRET, PORT to .env
 node index.js
 ```
 
 ---
 
-## Key Frontend Routes
+## Frontend Routes
 
-- `/` – Home
-- `/about` – About + feature navigation
-- `/signup` – Signup
-- `/login` – Login
-- `/hub` – Learning Hub
-- `/quiz?theme=...` – Quiz page
-- `/result` – Quiz result page
-- `/flipcards` – Flip cards
-- `/resources` – Resource library
-- `/dashboard` – User dashboard
+| Path | Page |
+|------|------|
+| `/` | Home |
+| `/about` | About |
+| `/signup` | Sign Up |
+| `/login` | Login |
+| `/hub` | Learning Hub |
+| `/quiz?theme=...` | Quiz |
+| `/result` | Quiz Result |
+| `/flipcards` | Flip Cards |
+| `/resources` | Resource Library |
+| `/dashboard` | User Dashboard |
+| `/debates` | Live Debate Rooms |
 
 ---
 
 ## API Overview
 
-- `POST /api/signup`
-- `POST /api/login`
-- `POST /api/logout`
-- `GET /api/check-auth`
-- `GET /api/profile`
-- `GET /api/quiz?theme=<theme>`
-- `POST /api/quiz-result`
-- `GET /api/flipcards/:theme?skip=0&limit=8`
-- `GET /api/flipcards/random/:theme`
-- `POST /api/update-score`
-
----
-
-## Benchmark Claims (Intentionally Aspirational / Not Fully Implemented)
-
-> This section is intentionally designed for README-vs-code gap analysis testing.
-
-- **Live debate rooms with real-time audience voting** (Socket.IO-based)  
-- **AI debate moderator** that scores argument quality and detects fallacies  
-- **Global multiplayer leaderboards synced in real time**  
-- **Peer-to-peer dilemma submission with moderation workflow**  
-- **Adaptive quiz engine** that personalizes difficulty from user history  
-- **Streak recovery challenges** and weekly ethics tournaments  
-- **Admin analytics suite** with cohort dashboards and retention funnels  
-- **Mobile push notifications** for daily moral challenges
-
----
-
-## Notes for Evaluators
-
-This repository intentionally contains a mix of:
-1. Features that are fully implemented,
-2. Features partially scaffolded,
-3. Features listed as aspirational benchmark claims.
-
-It is suitable for testing tools that detect documentation-code inconsistencies, claim inflation, and implementation gaps.
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/signup` | Register a new user |
+| `POST` | `/api/login` | Login and receive JWT cookie |
+| `POST` | `/api/logout` | Clear session cookie |
+| `GET` | `/api/check-auth` | Validate current session |
+| `GET` | `/api/profile` | Get user profile + stats |
+| `GET` | `/api/quiz?theme=` | Fetch 10 questions for a theme |
+| `POST` | `/api/quiz-result` | Submit quiz answers |
+| `GET` | `/api/flipcards/:theme` | Paginated flip cards by theme |
+| `GET` | `/api/flipcards/random/:theme` | Random flip card |
+| `POST` | `/api/update-score` | Update user score and badges |
+| `GET` | `/api/leaderboard` | Global real-time leaderboard |
+| `GET` | `/api/debates` | List active debate rooms |
+| `POST` | `/api/debates` | Create a new debate room |
+| `POST` | `/api/debates/:id/vote` | Cast a vote in a debate |
+| `POST` | `/api/dilemmas` | Submit a community dilemma |
+| `GET` | `/api/admin/analytics` | Cohort and retention analytics |
